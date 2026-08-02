@@ -1,15 +1,17 @@
 from fastapi import FastAPI
 
+from backend.app.core.config import settings
+
 app = FastAPI(
-    title="TizonaAI",
+    title=settings.APP_NAME,
     description="AI-Powered Threat Hunting and Threat Intelligence Platform",
-    version="0.1.0"
+    version=settings.APP_VERSION
 )
 
 @app.get("/")
 def root():
     return {
-        "project": "TizonaAI",
+        "project": settings.APP_NAME,
         "status": "running",
-        "version": "0.1.0"
+        "version": settings.APP_VERSION
     }
