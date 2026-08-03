@@ -15,6 +15,7 @@ def get_investigations(
     ioc: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
+
     query = db.query(Investigation)
 
     if ioc:
@@ -39,6 +40,21 @@ def get_investigations(
     ]
 
 
+def calculate_threat_level(risk_score: int):
+
+    if risk_score >= 90:
+        return "critical"
+
+    elif risk_score >= 70:
+        return "high"
+
+    elif risk_score >= 40:
+        return "medium"
+
+    else:
+        return "low"
+
+
 @router.get("/investigations/{investigation_id}/report")
 def get_investigation_report(
     investigation_id: int,
@@ -59,18 +75,9 @@ def get_investigation_report(
             detail="Investigation not found"
         )
 
-    if investigation.risk_score >= 90:
-        threat_level = "critical"
-
-    elif investigation.risk_score >= 70:
-        threat_level = "high"
-
-    elif investigation.risk_score >= 40:
-        threat_level = "medium"
-
-    else:
-        threat_level = "low"
-
+    threat_level = calculate_threat_level(
+        investigation.risk_score
+    )
 
     return {
         "id": investigation.id,
@@ -81,5 +88,45 @@ def get_investigation_report(
         "reputation": investigation.reputation,
         "source": investigation.source,
         "pulse_count": investigation.pulse_count,
+        "created_at": investigation.created_at
+    }
+
+
+@router.get("/investigations/{investigation_id}/report/json")
+def export_investigation_json(
+    investigation_id: int,
+    db: Session = Depends(get_db)
+):
+
+    investigation = (
+        db.query(Investigation)
+        .filter(
+            Investigation.id == investigation_id
+        )
+        .first()
+    )
+
+    if not investigation:
+        raise HTTPException(
+            status_code=404,
+            detail="Investigation not found"
+        )
+
+    threat_level = calculate_threat_level(
+        investigation.risk_score
+    )
+
+    return {
+        "case_id": investigation.id,
+        "ioc": investigation.ioc,
+        "classification": threat_level,
+        "risk_score": investigation.risk_score,
+        "reputation": investigation.reputation,
+        "intel_source": investigation.source,
+        "analysis": {
+            "ioc_type": investigation.ioc_type,
+            "pulse_count": investigation.pulse_count
+        },
+        "raw_data": investigation.raw_data,
         "created_at": investigation.created_at
     }
