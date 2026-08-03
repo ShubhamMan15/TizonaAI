@@ -4,6 +4,7 @@ import re
 from backend.app.services.otx_service import (
     get_ip_reputation,
     get_domain_reputation,
+    get_hash_reputation,
 )
 
 
@@ -38,10 +39,12 @@ def enrich_ioc(ioc: str):
     if ioc_type == "domain":
         return get_domain_reputation(ioc)
 
+    if ioc_type in ["md5", "sha1", "sha256"]:
+        return get_hash_reputation(ioc)
+
     return {
         "ioc": ioc,
-        "type": ioc_type,
-        "source": "mock",
-        "reputation": "unknown",
+        "type": "unknown",
+        "source": "TizonaAI",
         "pulse_count": 0
     }
