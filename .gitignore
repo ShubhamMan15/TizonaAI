@@ -1,6 +1,12 @@
 venv/
 .env
+
 __pycache__/
 *.pyc
+
 chromadb/
 reports/
+
+*.db
+tizona.db
+tizona_backup.db
