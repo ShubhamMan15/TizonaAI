@@ -1,7 +1,10 @@
 import ipaddress
 import re
 
-from backend.app.services.otx_service import get_ip_reputation
+from backend.app.services.otx_service import (
+    get_ip_reputation,
+    get_domain_reputation,
+)
 
 
 def detect_ioc_type(ioc: str) -> str:
@@ -31,6 +34,9 @@ def enrich_ioc(ioc: str):
 
     if ioc_type == "ip":
         return get_ip_reputation(ioc)
+
+    if ioc_type == "domain":
+        return get_domain_reputation(ioc)
 
     return {
         "ioc": ioc,

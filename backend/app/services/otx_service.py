@@ -14,6 +14,9 @@ def get_ip_reputation(ip: str):
 
     if response.status_code != 200:
         return {
+            "ioc": ip,
+            "type": "ip",
+            "source": "AlienVault OTX",
             "error": f"OTX returned status {response.status_code}"
         }
 
@@ -22,6 +25,33 @@ def get_ip_reputation(ip: str):
     return {
         "ioc": ip,
         "type": "ip",
+        "source": "AlienVault OTX",
+        "pulse_count": data.get("pulse_info", {}).get("count", 0)
+    }
+
+
+def get_domain_reputation(domain: str):
+    url = f"https://otx.alienvault.com/api/v1/indicators/domain/{domain}/general"
+
+    headers = {
+        "X-OTX-API-KEY": settings.OTX_API_KEY
+    }
+
+    response = httpx.get(url, headers=headers, timeout=20)
+
+    if response.status_code != 200:
+        return {
+            "ioc": domain,
+            "type": "domain",
+            "source": "AlienVault OTX",
+            "error": f"OTX returned status {response.status_code}"
+        }
+
+    data = response.json()
+
+    return {
+        "ioc": domain,
+        "type": "domain",
         "source": "AlienVault OTX",
         "pulse_count": data.get("pulse_info", {}).get("count", 0)
     }
