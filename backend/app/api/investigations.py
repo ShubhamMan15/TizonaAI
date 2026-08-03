@@ -37,6 +37,7 @@ def get_investigations(
             "pulse_count": item.pulse_count,
             "reputation": item.reputation,
             "risk_score": item.risk_score,
+            "mitre_attack": item.mitre_attack,
             "created_at": item.created_at
         }
         for item in investigations
@@ -91,6 +92,7 @@ def get_investigation_report(
         "reputation": investigation.reputation,
         "source": investigation.source,
         "pulse_count": investigation.pulse_count,
+        "mitre_attack": investigation.mitre_attack,
         "created_at": investigation.created_at
     }
 
@@ -126,11 +128,16 @@ def export_investigation_json(
         "risk_score": investigation.risk_score,
         "reputation": investigation.reputation,
         "intel_source": investigation.source,
+
         "analysis": {
             "ioc_type": investigation.ioc_type,
             "pulse_count": investigation.pulse_count
         },
+
+        "mitre_attack": investigation.mitre_attack,
+
         "raw_data": investigation.raw_data,
+
         "created_at": investigation.created_at
     }
 
