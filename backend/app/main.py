@@ -1,9 +1,14 @@
 from fastapi import FastAPI
 
+
+from backend.app.db.database import Base, engine
+from backend.app.models.investigation import Investigation
 from backend.app.api.enrich import router as enrich_router
 from backend.app.api.health import router as health_router
 from backend.app.api.ioc import router as ioc_router
 from backend.app.core.config import settings
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.APP_NAME,
