@@ -1,0 +1,35 @@
+{
+    "hash": [
+        {
+            "technique_id": "T1204",
+            "technique_name": "User Execution",
+            "description": "Malware execution through user interaction."
+        },
+        {
+            "technique_id": "T1105",
+            "technique_name": "Ingress Tool Transfer",
+            "description": "Threat actors transfer tools or payloads into an environment."
+        }
+    ],
+
+    "domain": [
+        {
+            "technique_id": "T1566",
+            "technique_name": "Phishing",
+            "description": "Malicious domains may be used in phishing campaigns."
+        },
+        {
+            "technique_id": "T1071",
+            "technique_name": "Application Layer Protocol",
+            "description": "Threat actors may use web protocols for communication."
+        }
+    ],
+
+    "ip": [
+        {
+            "technique_id": "T1071",
+            "technique_name": "Application Layer Protocol",
+            "description": "IP infrastructure may support command and control."
+        }
+    ]
+}
