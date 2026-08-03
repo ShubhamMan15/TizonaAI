@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from backend.app.api.enrich import router as enrich_router
 from backend.app.api.health import router as health_router
 from backend.app.api.ioc import router as ioc_router
 from backend.app.core.config import settings
@@ -20,6 +21,12 @@ app.include_router(
     ioc_router,
     prefix="/api",
     tags=["IOC"]
+)
+
+app.include_router(
+    enrich_router,
+    prefix="/api",
+    tags=["Enrichment"]
 )
 
 @app.get("/")
