@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -8,8 +10,16 @@ router = APIRouter()
 
 
 @router.get("/investigations")
-def get_investigations(db: Session = Depends(get_db)):
-    investigations = db.query(Investigation).all()
+def get_investigations(
+    ioc: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Investigation)
+
+    if ioc:
+        query = query.filter(Investigation.ioc == ioc)
+
+    investigations = query.all()
 
     return [
         {
