@@ -10,3 +10,6 @@ reports/
 *.db
 tizona.db
 tizona_backup.db
+
+*.pdf
+pdf
