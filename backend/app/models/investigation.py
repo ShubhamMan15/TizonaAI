@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String
+from datetime import datetime
+
+from sqlalchemy import Column, Integer, String, DateTime, JSON
 
 from backend.app.db.database import Base
 
@@ -8,9 +10,21 @@ class Investigation(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    ioc = Column(String, index=True)
-    ioc_type = Column(String)
+    ioc = Column(String, index=True, nullable=False)
 
-    source = Column(String)
+    ioc_type = Column(String, nullable=False)
 
-    pulse_count = Column(Integer)
+    source = Column(String, nullable=False)
+
+    pulse_count = Column(Integer, default=0)
+
+    reputation = Column(String, default="unknown")
+
+    risk_score = Column(Integer, default=0)
+
+    raw_data = Column(JSON, nullable=True)
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
