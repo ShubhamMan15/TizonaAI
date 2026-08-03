@@ -1,6 +1,8 @@
 import ipaddress
 import re
 
+from backend.app.services.otx_service import get_ip_reputation
+
 
 def detect_ioc_type(ioc: str) -> str:
     try:
@@ -25,9 +27,14 @@ def detect_ioc_type(ioc: str) -> str:
 
 
 def enrich_ioc(ioc: str):
+    ioc_type = detect_ioc_type(ioc)
+
+    if ioc_type == "ip":
+        return get_ip_reputation(ioc)
+
     return {
         "ioc": ioc,
-        "type": detect_ioc_type(ioc),
+        "type": ioc_type,
         "source": "mock",
         "reputation": "unknown",
         "pulse_count": 0
