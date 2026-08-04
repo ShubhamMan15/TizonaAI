@@ -45,6 +45,11 @@ class Investigation(Base):
         default=0
     )
 
+    status = Column(
+        String,
+        default="new"
+    )
+
     raw_data = Column(
         JSON,
         nullable=True
