@@ -6,7 +6,7 @@ body {
 }
 
 .dashboard {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: auto;
   padding: 20px;
 }
@@ -20,6 +20,12 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
   margin-bottom: 20px;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 .card {
@@ -54,5 +60,41 @@ th {
   background: #374151;
 }
 
+.ioc-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  box-sizing: border-box;
+}
 
+.investigate-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
 
+.investigate-btn:hover {
+  background: #1d4ed8;
+}
+
+.investigate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
