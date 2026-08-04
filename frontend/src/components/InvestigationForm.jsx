@@ -17,19 +17,37 @@ function InvestigationForm({ onResult }) {
     try {
       setLoading(true);
 
-      const response = await axios.post(
+      // Step 1: Enrich IOC
+      const enrichResponse = await axios.post(
         `${API_BASE}/ioc/enrich`,
         {
-          ioc: ioc.trim()
+          ioc: ioc.trim(),
         }
       );
 
-      onResult(response.data);
+      const investigationId =
+        enrichResponse.data.investigation_id;
+
+      // Step 2: Fetch full investigation report
+      const reportResponse = await axios.get(
+        `${API_BASE}/investigations/${investigationId}/report`
+      );
+
+      // Step 3: Send complete report to parent component
+      onResult(reportResponse.data);
 
       setIoc("");
     } catch (error) {
-      console.error("Investigation Error:", error);
-      alert("Investigation failed");
+      console.error(
+        "Investigation Error:",
+        error.response?.data || error.message
+      );
+
+      alert(
+        error.response?.data?.detail ||
+          error.message ||
+          "Investigation failed"
+      );
     } finally {
       setLoading(false);
     }
