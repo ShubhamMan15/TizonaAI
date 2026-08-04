@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from backend.app.models.investigation import Investigation
+from backend.app.models.investigation_event import InvestigationEvent
 from backend.app.services.mitre_service import get_mitre_mapping
 
 
@@ -29,6 +30,30 @@ def determine_reputation(result: dict) -> str:
         return "low-risk"
 
     return "unknown"
+
+
+def add_investigation_event(
+    db: Session,
+    investigation_id: int,
+    event_type: str,
+    description: str,
+    metadata: dict = None
+):
+
+    event = InvestigationEvent(
+
+        investigation_id=investigation_id,
+
+        event_type=event_type,
+
+        description=description,
+
+        event_metadata=metadata
+    )
+
+    db.add(event)
+
+    db.commit()
 
 
 def save_investigation(db: Session, result: dict):
@@ -74,6 +99,17 @@ def save_investigation(db: Session, result: dict):
 
         db.refresh(existing)
 
+        add_investigation_event(
+            db,
+            existing.id,
+            "investigation_updated",
+            "Existing investigation updated with new enrichment data",
+            {
+                "risk_score": risk_score,
+                "pulse_count": result.get("pulse_count", 0)
+            }
+        )
+
         return existing
 
 
@@ -107,5 +143,18 @@ def save_investigation(db: Session, result: dict):
     db.commit()
 
     db.refresh(investigation)
+
+
+    add_investigation_event(
+        db,
+        investigation.id,
+        "investigation_created",
+        "New investigation created",
+        {
+            "risk_score": risk_score,
+            "pulse_count": result.get("pulse_count", 0)
+        }
+    )
+
 
     return investigation

@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime, JSON
+from sqlalchemy.orm import relationship
 
 from backend.app.db.database import Base
 
@@ -63,4 +64,10 @@ class Investigation(Base):
     created_at = Column(
         DateTime,
         default=datetime.utcnow
+    )
+
+    events = relationship(
+        "InvestigationEvent",
+        back_populates="investigation",
+        cascade="all, delete-orphan"
     )
