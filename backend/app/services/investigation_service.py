@@ -33,13 +33,53 @@ def determine_reputation(result: dict) -> str:
 
 def save_investigation(db: Session, result: dict):
 
+    ioc = result.get("ioc")
     ioc_type = result.get("type")
 
     mitre_mapping = get_mitre_mapping(ioc_type)
 
+    risk_score = calculate_risk_score(result)
+    reputation = determine_reputation(result)
+
+    existing = (
+        db.query(Investigation)
+        .filter(
+            Investigation.ioc == ioc
+        )
+        .first()
+    )
+
+    if existing:
+
+        existing.source = result.get("source")
+
+        existing.ioc_type = ioc_type
+
+        existing.pulse_count = result.get(
+            "pulse_count",
+            0
+        )
+
+        existing.reputation = reputation
+
+        existing.risk_score = risk_score
+
+        existing.status = "new"
+
+        existing.raw_data = result
+
+        existing.mitre_attack = mitre_mapping
+
+        db.commit()
+
+        db.refresh(existing)
+
+        return existing
+
+
     investigation = Investigation(
 
-        ioc=result.get("ioc"),
+        ioc=ioc,
 
         ioc_type=ioc_type,
 
@@ -50,18 +90,17 @@ def save_investigation(db: Session, result: dict):
             0
         ),
 
-        reputation=determine_reputation(
-            result
-        ),
+        reputation=reputation,
 
-        risk_score=calculate_risk_score(
-            result
-        ),
+        risk_score=risk_score,
+
+        status="new",
 
         raw_data=result,
 
         mitre_attack=mitre_mapping
     )
+
 
     db.add(investigation)
 
