@@ -1,34 +1,65 @@
+import { Link } from "react-router-dom";
+
 import "./layout.css";
 
 
 function Sidebar(){
 
+
 return (
 
 <div className="sidebar">
+
 
 <h2 className="logo">
 ⚔ TizonaAI
 </h2>
 
 
+
 <nav>
 
-<a>Dashboard</a>
 
-<a>Investigations</a>
+<Link to="/">
+Dashboard
+</Link>
 
-<a>Threat Intelligence</a>
 
-<a>IOC Explorer</a>
+<Link to="/investigations">
+Investigations
+</Link>
 
-<a>MITRE ATT&CK</a>
 
-<a>Reports</a>
+<Link to="/threat-intelligence">
+Threat Intelligence
+</Link>
 
-<a>AI Assistant</a>
 
-<a>Settings</a>
+<Link to="/ioc-explorer">
+IOC Explorer
+</Link>
+
+
+<Link to="/mitre">
+MITRE ATT&CK
+</Link>
+
+
+<Link to="/reports">
+Reports
+</Link>
+
+
+<Link to="/assistant">
+AI Assistant
+</Link>
+
+
+<Link to="/settings">
+Settings
+</Link>
+
+
 
 </nav>
 
@@ -36,6 +67,7 @@ return (
 </div>
 
 );
+
 
 }
 
