@@ -8,11 +8,13 @@ color:white;
 
 
 
-.dashboard h1{
+/* PAGE HEADER */
+
+.dashboard h1 {
 
 font-size:36px;
 
-margin-bottom:30px;
+margin-bottom:15px;
 
 color:#f8fafc;
 
@@ -20,7 +22,19 @@ color:#f8fafc;
 
 
 
-.stats-grid{
+.dashboard p {
+
+color:#94a3b8;
+
+}
+
+
+
+
+
+/* STAT CARDS */
+
+.stats-grid {
 
 display:grid;
 
@@ -35,7 +49,7 @@ margin-bottom:25px;
 
 
 
-.stat-card{
+.stat-card {
 
 background:#1e293b;
 
@@ -55,7 +69,7 @@ border:1px solid #334155;
 
 
 
-.stat-icon{
+.stat-icon {
 
 font-size:35px;
 
@@ -63,7 +77,7 @@ font-size:35px;
 
 
 
-.stat-card h3{
+.stat-card h3 {
 
 margin:0;
 
@@ -73,7 +87,7 @@ color:#94a3b8;
 
 
 
-.stat-card p{
+.stat-card p {
 
 font-size:35px;
 
@@ -85,7 +99,11 @@ margin:5px 0;
 
 
 
-.danger{
+
+
+/* RISK COLORS */
+
+.danger {
 
 border-left:5px solid #ef4444;
 
@@ -93,7 +111,7 @@ border-left:5px solid #ef4444;
 
 
 
-.critical{
+.critical {
 
 border-left:5px solid #dc2626;
 
@@ -103,7 +121,9 @@ border-left:5px solid #dc2626;
 
 
 
-.chart-grid{
+/* CHART SECTION */
+
+.chart-grid {
 
 display:grid;
 
@@ -115,7 +135,11 @@ gap:25px;
 
 
 
-.card{
+
+
+/* COMMON CARD */
+
+.card {
 
 background:#111827;
 
@@ -131,9 +155,11 @@ margin-bottom:25px;
 
 
 
-.card h2{
+.card h2 {
 
 color:#e2e8f0;
+
+margin-top:0;
 
 }
 
@@ -141,7 +167,9 @@ color:#e2e8f0;
 
 
 
-table{
+/* TABLE */
+
+table {
 
 width:100%;
 
@@ -151,7 +179,7 @@ border-collapse:collapse;
 
 
 
-th{
+th {
 
 background:#1e293b;
 
@@ -161,7 +189,7 @@ color:#f8fafc;
 
 
 
-td,th{
+td, th {
 
 padding:12px;
 
@@ -173,7 +201,7 @@ text-align:left;
 
 
 
-tr:hover{
+tr:hover {
 
 background:#1e293b;
 
@@ -183,19 +211,160 @@ background:#1e293b;
 
 
 
-@media(max-width:900px){
+/* INVESTIGATION HEADER */
+
+.section-header {
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:20px;
+
+}
 
 
-.stats-grid{
+
+
+
+/* BUTTONS */
+
+.investigate-btn {
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:600;
+
+}
+
+
+
+.investigate-btn:hover {
+
+background:#1d4ed8;
+
+}
+
+
+
+
+
+.action-group {
+
+display:flex;
+
+gap:8px;
+
+flex-wrap:wrap;
+
+}
+
+
+
+
+
+/* SEVERITY BADGES */
+
+.severity {
+
+padding:6px 12px;
+
+border-radius:20px;
+
+font-weight:bold;
+
+display:inline-block;
+
+}
+
+
+
+.severity.critical {
+
+background:#dc2626;
+
+color:white;
+
+}
+
+
+
+.severity.high {
+
+background:#f97316;
+
+color:white;
+
+}
+
+
+
+.severity.medium {
+
+background:#eab308;
+
+color:black;
+
+}
+
+
+
+
+
+/* ERROR MESSAGE */
+
+.error {
+
+color:#ef4444;
+
+font-weight:bold;
+
+}
+
+
+
+
+
+/* RESPONSIVE */
+
+@media(max-width:900px) {
+
+
+.stats-grid {
 
 grid-template-columns:1fr;
 
 }
 
 
-.chart-grid{
+
+.chart-grid {
 
 grid-template-columns:1fr;
+
+}
+
+
+
+.section-header {
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:15px;
 
 }
 
