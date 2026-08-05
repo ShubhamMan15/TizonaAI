@@ -1,3 +1,5 @@
+import Timeline from "./Timeline";
+
 function InvestigationPanel({ investigation }) {
 
   if (!investigation) {
@@ -44,7 +46,6 @@ function InvestigationPanel({ investigation }) {
         {investigation.pulse_count}
       </p>
 
-
       <h3>MITRE ATT&CK</h3>
 
       {
@@ -71,9 +72,14 @@ function InvestigationPanel({ investigation }) {
         )
       }
 
+      <hr />
+
+      <Timeline
+        investigationId={investigation.id}
+      />
+
     </div>
   );
 }
-
 
 export default InvestigationPanel;

@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 
 from backend.app.db.session import get_db
 from backend.app.models.investigation import Investigation
+from backend.app.schemas.investigation_event import InvestigationEventResponse
+from backend.app.services.investigation_service import get_investigation_events
 from backend.app.services.report_service import generate_pdf_report
 
 
@@ -43,6 +45,38 @@ def get_investigations(
         }
         for item in investigations
     ]
+
+
+@router.get(
+    "/investigations/{investigation_id}/events",
+    response_model=list[InvestigationEventResponse]
+)
+def get_events(
+    investigation_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Return all timeline events for a specific investigation.
+    """
+
+    investigation = (
+        db.query(Investigation)
+        .filter(
+            Investigation.id == investigation_id
+        )
+        .first()
+    )
+
+    if not investigation:
+        raise HTTPException(
+            status_code=404,
+            detail="Investigation not found"
+        )
+
+    return get_investigation_events(
+        db=db,
+        investigation_id=investigation_id
+    )
 
 
 def calculate_threat_level(risk_score: int):

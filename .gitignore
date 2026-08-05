@@ -13,3 +13,4 @@ tizona_backup.db
 
 *.pdf
 pdf
+frontend/node_modules/
