@@ -256,3 +256,66 @@ transition:0.2s;
 background:#1d4ed8;
 
 }
+
+/* ==========================
+   AI Assistant Chat
+========================== */
+
+.chat-container{
+    margin-top:20px;
+    height:450px;
+    overflow-y:auto;
+    border:1px solid #2b2b2b;
+    border-radius:12px;
+    padding:20px;
+    background:#111827;
+}
+
+.message{
+    margin-bottom:16px;
+    padding:14px;
+    border-radius:12px;
+    line-height:1.6;
+}
+
+.user-message{
+    background:#2563eb;
+    color:white;
+    margin-left:20%;
+}
+
+.assistant-message{
+    background:#1f2937;
+    color:#f3f4f6;
+    margin-right:20%;
+}
+
+.chat-input-row{
+    display:flex;
+    gap:12px;
+    margin-top:20px;
+}
+
+.chat-input{
+    flex:1;
+    padding:14px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    font-size:15px;
+}
+
+.send-button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:0 24px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.send-button:hover{
+    background:#1d4ed8;
+}
+

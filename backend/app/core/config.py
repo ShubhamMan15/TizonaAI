@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     OTX_API_KEY: str = ""
     VT_API_KEY: str = ""
     ABUSEIPDB_API_KEY: str = ""
-
+    GEMINI_API_KEY: str = ""
     OLLAMA_URL: str = "http://localhost:11434"
 
     model_config = SettingsConfigDict(

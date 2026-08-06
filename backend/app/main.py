@@ -13,7 +13,8 @@ from backend.app.api.ioc import router as ioc_router
 from backend.app.api.investigations import router as investigations_router
 from backend.app.api.dashboard import router as dashboard_router
 from backend.app.api.threat_intelligence import router as threat_router
-
+from backend.app.api.mitre import router as mitre_router
+from backend.app.api.assistant import router as assistant_router
 
 from backend.app.core.config import settings
 
@@ -151,6 +152,29 @@ app.include_router(
 )
 
 
+# Mitre API
+
+app.include_router(
+
+    mitre_router,
+
+    prefix="/api",
+
+    tags=["MITRE ATT&CK"]
+
+)
+
+# Assistant  API
+
+app.include_router(
+
+    assistant_router,
+
+    prefix="/api",
+
+    tags=["AI Assistant"]
+
+)
 
 @app.get("/")
 
