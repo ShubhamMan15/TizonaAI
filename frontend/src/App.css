@@ -201,3 +201,58 @@ grid-template-columns:1fr;
 
 
 }
+
+
+.ioc-input{
+
+width:100%;
+
+padding:14px;
+
+margin:15px 0;
+
+border-radius:10px;
+
+border:1px solid #334155;
+
+background:#0f172a;
+
+color:white;
+
+font-size:16px;
+
+box-sizing:border-box;
+
+}
+
+
+
+.investigate-btn{
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+padding:12px 22px;
+
+border-radius:10px;
+
+font-size:16px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+transition:0.2s;
+
+}
+
+
+
+.investigate-btn:hover{
+
+background:#1d4ed8;
+
+}
