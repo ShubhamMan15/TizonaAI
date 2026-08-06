@@ -5,11 +5,11 @@ from fastapi.responses import FileResponse
 
 from sqlalchemy.orm import Session
 
-from backend.app.db.session import get_db
-from backend.app.models.investigation import Investigation
-from backend.app.schemas.investigation_event import InvestigationEventResponse
-from backend.app.services.investigation_service import get_investigation_events
-from backend.app.services.report_service import generate_pdf_report
+from app.db.session import get_db
+from app.models.investigation import Investigation
+from app.schemas.investigation_event import InvestigationEventResponse
+from app.services.investigation_service import get_investigation_events
+from app.services.report_service import generate_pdf_report
 
 
 router = APIRouter()

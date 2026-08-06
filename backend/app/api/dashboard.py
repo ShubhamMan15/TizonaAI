@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from backend.app.db.database import get_db
-from backend.app.models.investigation import Investigation
+from app.db.database import get_db
+from app.models.investigation import Investigation
 
 router = APIRouter(
     prefix="/api/dashboard",

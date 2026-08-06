@@ -1,32 +1,28 @@
-from google import genai
+import requests
 
-from backend.app.core.config import settings
-from backend.app.prompts.system_prompt import SYSTEM_PROMPT
-
-if not settings.GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY is not configured.")
-
-client = genai.Client(api_key=settings.GEMINI_API_KEY)
+OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
+OLLAMA_MODEL = "llama3.2:3b"
 
 
 def ask_gemini(prompt: str) -> str:
     """
-    Send a prompt to Gemini and return the generated response.
+    Compatibility wrapper.
+    The rest of the project still calls ask_gemini(),
+    but this now uses Ollama instead of Gemini.
     """
 
-    full_prompt = f"""
-{SYSTEM_PROMPT}
-
-User Question:
-{prompt}
-"""
-
-    response = client.models.generate_content(
-        model="gemini-flash-latest",
-        contents=full_prompt,
+    response = requests.post(
+        OLLAMA_URL,
+        json={
+            "model": OLLAMA_MODEL,
+            "prompt": prompt,
+            "stream": False,
+        },
+        timeout=300,
     )
 
-    if not response.text:
-        raise RuntimeError("Gemini returned an empty response.")
+    response.raise_for_status()
 
-    return response.text
+    data = response.json()
+
+    return data.get("response", "")

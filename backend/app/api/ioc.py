@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from backend.app.schemas.ioc import IOCExtractRequest
-from backend.app.services.ioc_service import extract_iocs
-from backend.app.services.enrichment_service import enrich_ioc
+from app.schemas.ioc import IOCExtractRequest
+from app.services.ioc_service import extract_iocs
+from app.services.enrichment_service import enrich_ioc
 
 router = APIRouter()
 

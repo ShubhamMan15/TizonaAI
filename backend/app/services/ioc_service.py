@@ -1,6 +1,6 @@
 import re
 
-from backend.app.utils.regex_patterns import (
+from app.utils.regex_patterns import (
     DOMAIN_REGEX,
     IP_REGEX,
     MD5_REGEX,

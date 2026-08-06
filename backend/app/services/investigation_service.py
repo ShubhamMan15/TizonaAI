@@ -2,9 +2,9 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from backend.app.models.investigation import Investigation
-from backend.app.models.investigation_event import InvestigationEvent
-from backend.app.services.mitre_service import get_mitre_mapping
+from app.models.investigation import Investigation
+from app.models.investigation_event import InvestigationEvent
+from app.services.mitre_service import get_mitre_mapping
 
 
 def calculate_risk_score(result: dict) -> int:

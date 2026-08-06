@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, JSON
 from sqlalchemy.orm import relationship
 
-from backend.app.db.database import Base
+from app.db.database import Base
 
 
 class Investigation(Base):

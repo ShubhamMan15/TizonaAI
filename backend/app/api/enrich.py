@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from backend.app.db.session import get_db
-from backend.app.schemas.enrich import EnrichmentRequest
-from backend.app.services.enrichment_service import enrich_ioc
-from backend.app.services.investigation_service import save_investigation
+from app.db.session import get_db
+from app.schemas.enrich import EnrichmentRequest
+from app.services.enrichment_service import enrich_ioc
+from app.services.investigation_service import save_investigation
 
 
 router = APIRouter()

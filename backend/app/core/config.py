@@ -1,4 +1,10 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+# Always load the .env file from the project root
+BASE_DIR = Path(__file__).resolve().parents[3]
 
 
 class Settings(BaseSettings):
@@ -13,8 +19,8 @@ class Settings(BaseSettings):
     OLLAMA_URL: str = "http://localhost:11434"
 
     model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8"
+        env_file=BASE_DIR / ".env",
+        env_file_encoding="utf-8",
     )
 
 

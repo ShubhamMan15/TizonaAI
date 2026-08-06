@@ -1,2 +1,2 @@
-from backend.app.models.investigation import Investigation
-from backend.app.models.investigation_event import InvestigationEvent
+from app.models.investigation import Investigation
+from app.models.investigation_event import InvestigationEvent

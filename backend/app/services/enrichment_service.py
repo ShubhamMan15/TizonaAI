@@ -1,7 +1,7 @@
 import ipaddress
 import re
 
-from backend.app.services.otx_service import (
+from app.services.otx_service import (
     get_ip_reputation,
     get_domain_reputation,
     get_hash_reputation,

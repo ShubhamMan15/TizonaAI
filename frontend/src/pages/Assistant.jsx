@@ -32,17 +32,26 @@ function Assistant() {
         };
 
         setMessages((prev) => [...prev, userMessage]);
-
         setLoading(true);
 
         try {
+            console.log("Sending:", {
+                message: message
+            });
+
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/assistant/chat",
                 {
-                    provider,
-                    message
+                    message: message
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 }
             );
+
+            console.log("Response:", response.data);
 
             setMessages((prev) => [
                 ...prev,
@@ -52,11 +61,33 @@ function Assistant() {
                 }
             ]);
         } catch (error) {
+            console.error("Assistant Error:", error);
+
+            let errorText = "Unknown error";
+
+            if (error.response) {
+                console.error("Status:", error.response.status);
+                console.error("Data:", error.response.data);
+
+                errorText =
+                    "Backend Error:\n\n" +
+                    JSON.stringify(error.response.data, null, 2);
+            } else if (error.request) {
+                console.error("No response:", error.request);
+
+                errorText =
+                    "No response received from backend.";
+            } else {
+                console.error("Error:", error.message);
+
+                errorText = error.message;
+            }
+
             setMessages((prev) => [
                 ...prev,
                 {
                     sender: "assistant",
-                    text: "❌ Unable to contact the AI Assistant."
+                    text: "❌ " + errorText
                 }
             ]);
         }
@@ -145,7 +176,6 @@ function Assistant() {
             <div className="chat-container">
 
                 {messages.map((msg, index) => (
-
                     <div
                         key={index}
                         className={
@@ -169,17 +199,13 @@ function Assistant() {
                         ) : (
                             <span>{msg.text}</span>
                         )}
-
                     </div>
-
                 ))}
 
                 {loading && (
                     <div className="message assistant-message">
                         <strong>Assistant</strong>
-
                         <br />
-
                         Thinking...
                     </div>
                 )}
@@ -204,8 +230,9 @@ function Assistant() {
                 <button
                     className="send-button"
                     onClick={sendMessage}
+                    disabled={loading}
                 >
-                    Send
+                    {loading ? "Thinking..." : "Send"}
                 </button>
 
             </div>
