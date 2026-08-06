@@ -4,6 +4,7 @@ import Layout from "./layout/Layout";
 
 import Dashboard from "./pages/Dashboard";
 import Investigations from "./pages/Investigations";
+import InvestigationDetails from "./pages/InvestigationDetails";
 import ThreatIntel from "./pages/ThreatIntel";
 import IOCExplorer from "./pages/IOCExplorer";
 import Mitre from "./pages/Mitre";
@@ -11,47 +12,61 @@ import Reports from "./pages/Reports";
 import Assistant from "./pages/Assistant";
 import Settings from "./pages/Settings";
 
-
 import "./App.css";
 
+function App() {
+    return (
+        <Layout>
+            <Routes>
 
-function App(){
+                <Route
+                    path="/"
+                    element={<Dashboard />}
+                />
 
+                <Route
+                    path="/investigations"
+                    element={<Investigations />}
+                />
 
-return (
+                <Route
+                    path="/investigations/:id"
+                    element={<InvestigationDetails />}
+                />
 
-<Layout>
+                <Route
+                    path="/threat-intelligence"
+                    element={<ThreatIntel />}
+                />
 
+                <Route
+                    path="/ioc-explorer"
+                    element={<IOCExplorer />}
+                />
 
-<Routes>
+                <Route
+                    path="/mitre"
+                    element={<Mitre />}
+                />
 
+                <Route
+                    path="/reports"
+                    element={<Reports />}
+                />
 
-<Route path="/" element={<Dashboard/>}/>
+                <Route
+                    path="/assistant"
+                    element={<Assistant />}
+                />
 
-<Route path="/investigations" element={<Investigations/>}/>
+                <Route
+                    path="/settings"
+                    element={<Settings />}
+                />
 
-<Route path="/threat-intelligence" element={<ThreatIntel/>}/>
-
-<Route path="/ioc-explorer" element={<IOCExplorer/>}/>
-
-<Route path="/mitre" element={<Mitre/>}/>
-
-<Route path="/reports" element={<Reports/>}/>
-
-<Route path="/assistant" element={<Assistant/>}/>
-
-<Route path="/settings" element={<Settings/>}/>
-
-
-</Routes>
-
-
-</Layout>
-
-);
-
-
+            </Routes>
+        </Layout>
+    );
 }
-
 
 export default App;

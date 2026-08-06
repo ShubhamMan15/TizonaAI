@@ -6,199 +6,214 @@ import "../App.css";
 const API_BASE = "http://127.0.0.1:8000/api";
 
 function IOCExplorer() {
+    const [ioc, setIoc] = useState("");
 
-  const [ioc, setIoc] = useState("");
+    const [details, setDetails] = useState(null);
 
-  const [details, setDetails] = useState(null);
+    const [history, setHistory] = useState([]);
 
-  const [history, setHistory] = useState([]);
+    const [related, setRelated] = useState([]);
 
-  const [related, setRelated] = useState([]);
+    const [investigationId, setInvestigationId] = useState(null);
 
-  const investigateIOC = async () => {
+    const investigateIOC = async () => {
 
-    if (!ioc.trim()) return;
+        if (!ioc.trim()) return;
 
-    try {
+        try {
 
-      const detailsResponse = await axios.get(
-        `${API_BASE}/ioc/details/${ioc}`
-      );
+            // Save investigation automatically
+            const enrichResponse = await axios.post(
+                `${API_BASE}/ioc/enrich`,
+                {
+                    ioc: ioc
+                }
+            );
 
-      const historyResponse = await axios.get(
-        `${API_BASE}/ioc/history/${ioc}`
-      );
+            setDetails(enrichResponse.data);
 
-      const relatedResponse = await axios.get(
-        `${API_BASE}/ioc/related/${ioc}`
-      );
+            setInvestigationId(
+                enrichResponse.data.investigation_id
+            );
 
-      setDetails(detailsResponse.data);
+            const historyResponse = await axios.get(
+                `${API_BASE}/ioc/history/${ioc}`
+            );
 
-      setHistory(historyResponse.data);
+            setHistory(historyResponse.data);
 
-      setRelated(relatedResponse.data);
+            const relatedResponse = await axios.get(
+                `${API_BASE}/ioc/related/${ioc}`
+            );
 
-    } catch (error) {
+            setRelated(relatedResponse.data);
 
-      console.error("IOC Investigation Error", error);
+        } catch (error) {
 
-      alert("Unable to investigate IOC.");
+            console.error(error);
 
-    }
+            alert("Unable to investigate IOC.");
 
-  };
+        }
 
-  return (
+    };
 
-    <div className="dashboard">
+    return (
 
-      <h1>🧬 IOC Explorer</h1>
+        <div className="dashboard">
 
-      <p>
-        Search and investigate IP addresses, domains and file hashes.
-      </p>
+            <h1>🧬 IOC Explorer</h1>
 
-      <div className="card">
+            <p>
+                Search and investigate IPs, domains and hashes.
+            </p>
 
-        <h2>IOC Search</h2>
+            <div className="card">
 
-        <input
-          className="ioc-input"
-          placeholder="Enter IP, Domain or Hash..."
-          value={ioc}
-          onChange={(e) => setIoc(e.target.value)}
-        />
+                <h2>IOC Search</h2>
 
-        <button
-          className="investigate-btn"
-          onClick={investigateIOC}
-        >
-          Investigate IOC
-        </button>
+                <input
+                    className="ioc-input"
+                    placeholder="Enter IOC..."
+                    value={ioc}
+                    onChange={(e) => setIoc(e.target.value)}
+                />
 
-      </div>
+                <button
+                    className="investigate-btn"
+                    onClick={investigateIOC}
+                >
+                    Investigate IOC
+                </button>
 
-      {details && (
+            </div>
 
-        <>
-          <div className="card">
+            {details && (
 
-            <h2>IOC Details</h2>
+                <>
 
-            <table>
+                    <div className="card">
 
-              <tbody>
+                        <h2>IOC Details</h2>
 
-                <tr>
-                  <td>IOC</td>
-                  <td>{details.ioc}</td>
-                </tr>
+                        <table>
 
-                <tr>
-                  <td>Type</td>
-                  <td>{details.type}</td>
-                </tr>
+                            <tbody>
 
-                <tr>
-                  <td>Source</td>
-                  <td>{details.source}</td>
-                </tr>
+                                <tr>
+                                    <td>Investigation ID</td>
+                                    <td>{investigationId}</td>
+                                </tr>
 
-                <tr>
-                  <td>Pulse Count</td>
-                  <td>{details.pulse_count}</td>
-                </tr>
+                                <tr>
+                                    <td>IOC</td>
+                                    <td>{details.ioc}</td>
+                                </tr>
 
-              </tbody>
+                                <tr>
+                                    <td>Type</td>
+                                    <td>{details.type}</td>
+                                </tr>
 
-            </table>
+                                <tr>
+                                    <td>Source</td>
+                                    <td>{details.source}</td>
+                                </tr>
 
-          </div>
+                                <tr>
+                                    <td>Pulse Count</td>
+                                    <td>{details.pulse_count}</td>
+                                </tr>
 
-          <div className="card">
+                            </tbody>
 
-            <h2>Investigation History</h2>
+                        </table>
 
-            <table>
+                    </div>
 
-              <thead>
+                    <div className="card">
 
-                <tr>
+                        <h2>Investigation History</h2>
 
-                  <th>Date</th>
+                        <table>
 
-                  <th>Action</th>
+                            <thead>
 
-                </tr>
+                                <tr>
 
-              </thead>
+                                    <th>Date</th>
 
-              <tbody>
+                                    <th>Action</th>
 
-                {history.map((item, index) => (
+                                </tr>
 
-                  <tr key={index}>
+                            </thead>
 
-                    <td>{item.date}</td>
+                            <tbody>
 
-                    <td>{item.action}</td>
+                                {history.map((item, index) => (
 
-                  </tr>
+                                    <tr key={index}>
 
-                ))}
+                                        <td>{item.date}</td>
 
-              </tbody>
+                                        <td>{item.action}</td>
 
-            </table>
+                                    </tr>
 
-          </div>
+                                ))}
 
-          <div className="card">
+                            </tbody>
 
-            <h2>Related IOCs</h2>
+                        </table>
 
-            <table>
+                    </div>
 
-              <thead>
+                    <div className="card">
 
-                <tr>
+                        <h2>Related IOCs</h2>
 
-                  <th>IOC</th>
+                        <table>
 
-                  <th>Type</th>
+                            <thead>
 
-                </tr>
+                                <tr>
 
-              </thead>
+                                    <th>IOC</th>
 
-              <tbody>
+                                    <th>Type</th>
 
-                {related.map((item, index) => (
+                                </tr>
 
-                  <tr key={index}>
+                            </thead>
 
-                    <td>{item.ioc}</td>
+                            <tbody>
 
-                    <td>{item.type}</td>
+                                {related.map((item, index) => (
 
-                  </tr>
+                                    <tr key={index}>
 
-                ))}
+                                        <td>{item.ioc}</td>
 
-              </tbody>
+                                        <td>{item.type}</td>
 
-            </table>
+                                    </tr>
 
-          </div>
+                                ))}
 
-        </>
+                            </tbody>
 
-      )}
+                        </table>
 
-    </div>
+                    </div>
 
-  );
+                </>
+
+            )}
+
+        </div>
+
+    );
 
 }
 
