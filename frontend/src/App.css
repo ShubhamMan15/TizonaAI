@@ -319,3 +319,164 @@ background:#1d4ed8;
     background:#1d4ed8;
 }
 
+/* ===========================================
+   SOC Status Badges
+=========================================== */
+
+.badge{
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+.badge-critical{
+    background:#7f1d1d;
+    color:#fecaca;
+}
+
+.badge-high{
+    background:#7c2d12;
+    color:#fed7aa;
+}
+
+.badge-medium{
+    background:#78350f;
+    color:#fde68a;
+}
+
+.badge-low{
+    background:#14532d;
+    color:#bbf7d0;
+}
+
+.badge-new{
+    background:#1e3a8a;
+    color:#bfdbfe;
+}
+
+.badge-closed{
+    background:#374151;
+    color:#d1d5db;
+}
+
+/* ===========================================
+   Risk Score Progress Bar
+=========================================== */
+
+.risk-bar{
+    width:220px;
+    height:12px;
+    background:#1f2937;
+    border-radius:999px;
+    overflow:hidden;
+    margin-top:8px;
+}
+
+.risk-fill{
+    height:100%;
+    transition:width .3s ease;
+}
+
+.risk-low{
+    background:#22c55e;
+}
+
+.risk-medium{
+    background:#eab308;
+}
+
+.risk-high{
+    background:#f97316;
+}
+
+.risk-critical{
+    background:#ef4444;
+}
+
+/* ===========================================
+   Investigation Layout
+=========================================== */
+
+.page-container{
+    padding:30px;
+    color:white;
+}
+
+.details-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    margin-top:25px;
+}
+
+.details-card{
+    background:#111827;
+    border:1px solid #334155;
+    border-radius:16px;
+    padding:24px;
+}
+
+.details-card h2{
+    margin-top:0;
+    margin-bottom:20px;
+}
+
+.details-card table{
+    width:100%;
+}
+
+.details-card td{
+    padding:12px;
+}
+
+/* ===========================================
+   Tables
+=========================================== */
+
+.dashboard-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.dashboard-table th{
+    background:#1f2937;
+}
+
+.dashboard-table tr:hover{
+    background:#1e293b;
+}
+
+/* ===========================================
+   Action Buttons
+=========================================== */
+
+.action-buttons{
+    margin-top:25px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.action-buttons button{
+    min-width:180px;
+}
+
+/* ===========================================
+   Responsive
+=========================================== */
+
+@media (max-width:900px){
+
+    .details-grid{
+        grid-template-columns:1fr;
+    }
+
+    .risk-bar{
+        width:100%;
+    }
+
+}
