@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid
+    PieChart,
+    Pie,
+    Cell,
+    Tooltip,
+    ResponsiveContainer,
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid
 } from "recharts";
 
 import InvestigationForm from "../components/InvestigationForm";
@@ -20,479 +21,520 @@ import StatCard from "../components/ui/StatCard";
 
 import "../App.css";
 
-
 const API_BASE = "http://127.0.0.1:8000/api";
-
 
 function Dashboard() {
 
+    const [stats, setStats] = useState(null);
+    const [topIocs, setTopIocs] = useState([]);
+    const [threatSummary, setThreatSummary] = useState({});
+    const [recentInvestigations, setRecentInvestigations] = useState([]);
+    const [investigationReport, setInvestigationReport] = useState(null);
 
-  const [stats,setStats] = useState(null);
+    const [lastUpdated, setLastUpdated] = useState("");
 
-  const [topIocs,setTopIocs] = useState([]);
+    const [search, setSearch] = useState("");
 
-  const [threatSummary,setThreatSummary] = useState({});
+    const [riskFilter, setRiskFilter] = useState("ALL");
 
-  const [recentInvestigations,setRecentInvestigations] = useState([]);
+    const [typeFilter, setTypeFilter] = useState("ALL");
 
-  const [investigationReport,setInvestigationReport] = useState(null);
+    const [reputationFilter, setReputationFilter] = useState("ALL");
 
+    const loadDashboard = async () => {
 
+        try {
 
-  const loadDashboard = async()=>{
+            const [
+                statsRes,
+                topRes,
+                summaryRes,
+                recentRes
+            ] = await Promise.all([
 
+                axios.get(`${API_BASE}/dashboard/stats`),
 
-    try{
+                axios.get(`${API_BASE}/dashboard/top-iocs`),
 
+                axios.get(`${API_BASE}/dashboard/threat-summary`),
 
-      const [
-        statsRes,
-        topRes,
-        summaryRes,
-        recentRes
-      ] = await Promise.all([
+                axios.get(`${API_BASE}/dashboard/recent-investigations`)
 
+            ]);
 
-        axios.get(
-          `${API_BASE}/dashboard/stats`
-        ),
+            setStats(statsRes.data);
 
+            setTopIocs(
+                topRes.data.top_iocs || []
+            );
 
-        axios.get(
-          `${API_BASE}/dashboard/top-iocs`
-        ),
+            setThreatSummary(
+                summaryRes.data.ioc_type_distribution || {}
+            );
 
+            setRecentInvestigations(
+                recentRes.data.recent_investigations || []
+            );
 
-        axios.get(
-          `${API_BASE}/dashboard/threat-summary`
-        ),
+            setLastUpdated(
+                new Date().toLocaleTimeString()
+            );
 
+        } catch (error) {
 
-        axios.get(
-          `${API_BASE}/dashboard/recent-investigations`
-        )
+            console.error(
+                "Dashboard Error:",
+                error
+            );
 
+        }
 
-      ]);
+    };
 
+    useEffect(() => {
 
+        loadDashboard();
 
-      setStats(statsRes.data);
+        const interval = setInterval(() => {
 
+            loadDashboard();
 
-      setTopIocs(
-        topRes.data.top_iocs || []
-      );
+        }, 30000);
 
+        return () => clearInterval(interval);
 
-      setThreatSummary(
-        summaryRes.data.ioc_type_distribution || {}
-      );
+    }, []);
 
+    const handleInvestigationResult = (report) => {
 
-      setRecentInvestigations(
-        recentRes.data.recent_investigations || []
-      );
+        setInvestigationReport(report);
 
+        loadDashboard();
 
-    }
-    catch(error){
+    };
 
-      console.error(
-        "Dashboard Error:",
-        error
-      );
+    const pieData = Object.entries(
+        threatSummary
+    ).map(([name, value]) => ({
+        name,
+        value
+    }));
 
-    }
+    const filteredInvestigations =
+        recentInvestigations.filter((item) => {
 
+            const searchMatch =
+                search === "" ||
+                item.ioc
+                    .toLowerCase()
+                    .includes(search.toLowerCase());
+
+            let riskLabel = "LOW";
+
+            if (item.risk_score >= 90)
+                riskLabel = "CRITICAL";
+            else if (item.risk_score >= 70)
+                riskLabel = "HIGH";
+            else if (item.risk_score >= 40)
+                riskLabel = "MEDIUM";
 
-  };
+            const riskMatch =
+                riskFilter === "ALL" ||
+                riskLabel === riskFilter;
 
+            const typeMatch =
+                typeFilter === "ALL" ||
+                item.ioc_type.toUpperCase() === typeFilter;
 
+            const reputationMatch =
+                reputationFilter === "ALL" ||
+                item.reputation.toUpperCase() === reputationFilter;
+
+            return (
+                searchMatch &&
+                riskMatch &&
+                typeMatch &&
+                reputationMatch
+            );
 
-  useEffect(()=>{
+        });
+
+   return (
+
+    <div className="dashboard">
+
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "20px"
+            }}
+        >
+
+            <h1>
+                ⚔ TizonaAI Threat Intelligence Dashboard
+            </h1>
 
-    loadDashboard();
+            <span
+                style={{
+                    color: "#94a3b8",
+                    fontSize: "14px"
+                }}
+            >
+                Last Updated: {lastUpdated}
+            </span>
 
-  },[]);
+        </div>
 
+        <InvestigationForm
+            onResult={handleInvestigationResult}
+        />
 
+        {
 
+            investigationReport && (
 
-  const handleInvestigationResult=(report)=>{
+                <InvestigationPanel
+                    investigation={investigationReport}
+                />
 
-    setInvestigationReport(report);
+            )
 
-    loadDashboard();
+        }
 
-  };
+        <div className="stats-grid">
 
+            <StatCard
+                title="Total Investigations"
+                value={stats?.total_investigations ?? 0}
+                icon="📊"
+            />
 
+            <StatCard
+                title="High Risk"
+                value={stats?.high_risk ?? 0}
+                icon="⚠️"
+                severity="danger"
+            />
 
+            <StatCard
+                title="Critical"
+                value={stats?.critical ?? 0}
+                icon="🔥"
+                severity="critical"
+            />
 
-  const pieData = Object.entries(
-    threatSummary
-  ).map(
-    ([name,value])=>({
+        </div>
 
-      name,
-      value
+        <div className="chart-grid">
 
-    })
-  );
+            <div className="card">
 
+                <h2>
+                    IOC Threat Distribution
+                </h2>
 
+                <ResponsiveContainer
+                    width="100%"
+                    height={300}
+                >
 
+                    <PieChart>
 
-  return (
+                        <Pie
+                            data={pieData}
+                            dataKey="value"
+                            nameKey="name"
+                            outerRadius={110}
+                            label
+                        >
 
+                            {
 
-<div className="dashboard">
+                                pieData.map((entry, index) => (
 
+                                    <Cell
+                                        key={index}
+                                        fill={
+                                            [
+                                                "#3b82f6",
+                                                "#ef4444",
+                                                "#10b981",
+                                                "#f59e0b",
+                                                "#8b5cf6"
+                                            ][index % 5]
+                                        }
+                                    />
+
+                                ))
+
+                            }
+
+                        </Pie>
+
+                        <Tooltip />
+
+                    </PieChart>
+
+                </ResponsiveContainer>
+
+            </div>
+
+            <div className="card">
+
+                <h2>
+                    Top Indicators of Compromise
+                </h2>
+
+                <ResponsiveContainer
+                    width="100%"
+                    height={300}
+                >
+
+                    <BarChart data={topIocs}>
+
+                        <CartesianGrid strokeDasharray="3 3" />
+
+                        <XAxis
+                            dataKey="ioc"
+                            hide
+                        />
 
-<h1>
-⚔ TizonaAI Threat Intelligence Dashboard
-</h1>
+                        <YAxis />
 
+                        <Tooltip />
 
+                        <Bar dataKey="count" />
 
-<InvestigationForm
-onResult={handleInvestigationResult}
-/>
+                    </BarChart>
 
+                </ResponsiveContainer>
 
+            </div>
 
-{
-investigationReport &&
+        </div>
 
-<InvestigationPanel
-investigation={investigationReport}
-/>
+        <div className="card">
 
-}
+            <h2>
+                Recent Investigations
+            </h2>
 
+            <div
+                style={{
+                    display: "flex",
+                    gap: "12px",
+                    flexWrap: "wrap",
+                    marginBottom: "20px"
+                }}
+            >
 
+                <input
+                    className="ioc-input"
+                    style={{
+                        flex: 1,
+                        minWidth: "220px",
+                        margin: 0
+                    }}
+                    placeholder="Search IOC..."
+                    value={search}
+                    onChange={(e) =>
+                        setSearch(e.target.value)
+                    }
+                />
 
+                <select
+                    value={riskFilter}
+                    onChange={(e) =>
+                        setRiskFilter(e.target.value)
+                    }
+                >
+                    <option value="ALL">All Risk</option>
+                    <option value="CRITICAL">Critical</option>
+                    <option value="HIGH">High</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="LOW">Low</option>
+                </select>
 
+                <select
+                    value={typeFilter}
+                    onChange={(e) =>
+                        setTypeFilter(e.target.value)
+                    }
+                >
+                    <option value="ALL">All Types</option>
+                    <option value="IP">IP</option>
+                    <option value="DOMAIN">DOMAIN</option>
+                    <option value="HASH">HASH</option>
+                </select>
 
-<div className="stats-grid">
+                <select
+                    value={reputationFilter}
+                    onChange={(e) =>
+                        setReputationFilter(e.target.value)
+                    }
+                >
+                    <option value="ALL">All Reputation</option>
+                    <option value="MALICIOUS">Malicious</option>
+                    <option value="SUSPICIOUS">Suspicious</option>
+                    <option value="UNKNOWN">Unknown</option>
+                    <option value="SAFE">Safe</option>
+                </select>
 
+            </div>
 
-<StatCard
+            <table className="dashboard-table">
 
-title="Total Investigations"
+                <thead>
 
-value={
-stats?.total_investigations ?? 0
-}
+                    <tr>
 
-icon="📊"
+                        <th>ID</th>
 
-/>
+                        <th>IOC</th>
 
+                        <th>Type</th>
 
+                        <th>Risk</th>
 
-<StatCard
+                        <th>Reputation</th>
 
-title="High Risk"
+                        <th>Action</th>
 
-value={
-stats?.high_risk ?? 0
-}
+                    </tr>
 
-icon="⚠️"
+                </thead>
 
-severity="danger"
+                <tbody>
 
-/>
+                    {
 
+                        filteredInvestigations.length === 0 ? (
 
+                            <tr>
 
-<StatCard
+                                <td
+                                    colSpan="6"
+                                    style={{
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    No investigations found.
+                                </td>
 
-title="Critical"
+                            </tr>
 
-value={
-stats?.critical ?? 0
-}
+                        ) : (
 
-icon="🔥"
+                            filteredInvestigations.map((item) => {
 
-severity="critical"
+                                let riskLabel = "LOW";
+                                let riskClass = "badge badge-low";
 
-/>
+                                if (item.risk_score >= 90) {
 
+                                    riskLabel = "CRITICAL";
+                                    riskClass = "badge badge-critical";
 
+                                }
 
-</div>
+                                else if (item.risk_score >= 70) {
 
+                                    riskLabel = "HIGH";
+                                    riskClass = "badge badge-high";
 
+                                }
 
+                                else if (item.risk_score >= 40) {
 
+                                    riskLabel = "MEDIUM";
+                                    riskClass = "badge badge-medium";
 
-<div className="chart-grid">
+                                }
 
+                                let reputationClass = "badge badge-low";
 
+                                if (item.reputation === "malicious") {
 
-<div className="card">
+                                    reputationClass = "badge badge-critical";
 
+                                }
 
-<h2>
-IOC Threat Distribution
-</h2>
+                                else if (item.reputation === "suspicious") {
 
+                                    reputationClass = "badge badge-high";
 
+                                }
 
-<ResponsiveContainer
-width="100%"
-height={300}
->
+                                else if (item.reputation === "unknown") {
 
+                                    reputationClass = "badge badge-medium";
 
-<PieChart>
+                                }
 
+                                return (
 
-<Pie
+                                    <tr key={item.id}>
 
-data={pieData}
+                                        <td>{item.id}</td>
 
-dataKey="value"
+                                        <td>{item.ioc}</td>
 
-nameKey="name"
+                                        <td>{item.ioc_type}</td>
 
-outerRadius={110}
+                                        <td>
 
-label
+                                            <span className={riskClass}>
+                                                {riskLabel}
+                                            </span>
 
->
+                                        </td>
 
+                                        <td>
 
-{
+                                            <span className={reputationClass}>
+                                                {item.reputation.toUpperCase()}
+                                            </span>
 
-pieData.map(
-(entry,index)=>(
+                                        </td>
 
-<Cell
+                                        <td>
 
-key={index}
+                                            <Link
+                                                to={`/investigations/${item.id}`}
+                                            >
 
-fill={
-[
-"#3b82f6",
-"#ef4444",
-"#10b981",
-"#f59e0b",
-"#8b5cf6"
-][index % 5]
-}
+                                                <button
+                                                    className="investigate-btn"
+                                                >
+                                                    View
+                                                </button>
 
-/>
+                                            </Link>
 
-)
+                                        </td>
 
-)
+                                    </tr>
 
-}
+                                );
 
+                            })
 
+                        )
 
-</Pie>
+                    }
 
+                </tbody>
 
+            </table>
 
-<Tooltip />
+        </div>
 
-
-</PieChart>
-
-
-
-</ResponsiveContainer>
-
-
-</div>
-
-
-
-
-
-<div className="card">
-
-
-<h2>
-Top Indicators of Compromise
-</h2>
-
-
-
-<ResponsiveContainer
-
-width="100%"
-
-height={300}
-
->
-
-
-<BarChart
-
-data={topIocs}
-
->
-
-
-<CartesianGrid
-
-strokeDasharray="3 3"
-
-/>
-
-
-<XAxis
-
-dataKey="ioc"
-
-hide
-
-/>
-
-
-<YAxis />
-
-
-<Tooltip />
-
-
-<Bar
-
-dataKey="count"
-
-/>
-
-
-
-</BarChart>
-
-
-
-</ResponsiveContainer>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-<div className="card">
-
-
-<h2>
-Recent Investigations
-</h2>
-
-
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>ID</th>
-
-<th>IOC</th>
-
-<th>Type</th>
-
-<th>Risk</th>
-
-<th>Status</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody>
-
-
-{
-
-recentInvestigations.map(
-
-(item)=>(
-
-
-<tr key={item.id}>
-
-
-<td>
-{item.id}
-</td>
-
-
-<td>
-{item.ioc}
-</td>
-
-
-<td>
-{item.ioc_type}
-</td>
-
-
-<td>
-{item.risk_score}
-</td>
-
-
-<td>
-{item.reputation}
-</td>
-
-
-</tr>
-
-
-)
-
-)
-
-
-}
-
-
-
-</tbody>
-
-
-
-</table>
-
-
-</div>
-
-
-
-
-</div>
-
+    </div>
 
 );
 
-
 }
-
-
 
 export default Dashboard;
